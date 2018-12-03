@@ -1,4 +1,4 @@
-# Symfony4 user auth with 3 level exemple
+# Symfony4 user auth with 3 level exemple
 
 * Clone it,
 * Install it,
