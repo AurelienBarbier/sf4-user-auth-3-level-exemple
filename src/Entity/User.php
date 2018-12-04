@@ -40,6 +40,16 @@ class User implements UserInterface
     private $plainPassword;
 
     /**
+     * @ORM\Column(type="boolean", options={"default" : false})
+     */
+    private $confirmed = false;
+
+    /**
+     * @ORM\Column(type="string", length=32, nullable=true)
+     */
+    private $token;
+
+    /**
      * @return string
      */
     public function getPlainPassword(): ?string
@@ -133,5 +143,29 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function isConfirmed(): ?bool
+    {
+        return $this->confirmed;
+    }
+
+    public function setConfirmed(bool $confirmed): self
+    {
+        $this->confirmed = $confirmed;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
     }
 }

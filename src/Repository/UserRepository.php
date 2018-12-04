@@ -19,6 +19,19 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
+    public function activateToken(string $token)
+    {
+        return $this->createQueryBuilder('u')
+            ->update()
+            ->set('u.confirmed', ':confirmed')
+            ->setParameter('confirmed', true)
+            ->set('u.token', ':null')
+            ->setParameter('null', null)
+            ->where('u.token = :token')
+            ->setParameter('token', $token)
+            ->getQuery()->execute();
+    }
+
     // /**
     //  * @return User[] Returns an array of User objects
     //  */

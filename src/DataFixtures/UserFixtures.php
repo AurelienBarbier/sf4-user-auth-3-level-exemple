@@ -25,6 +25,9 @@ class UserFixtures extends Fixture
             $admin,
             'admin'
         ));
+
+        //$admin->setToken(md5(random_bytes(30))); // Useless in fixtures on admin account
+        $admin->setConfirmed(true);
         $manager->persist($admin);
 
         $subscriber = new User();
@@ -34,6 +37,9 @@ class UserFixtures extends Fixture
             $subscriber,
             'subscriber'
         ));
+
+        $subscriber->setToken(md5(random_bytes(30))); // Usefull in fixtures if we want to test confirmation process
+        $subscriber->setConfirmed(false);
         $manager->persist($subscriber);
 
         $manager->flush();

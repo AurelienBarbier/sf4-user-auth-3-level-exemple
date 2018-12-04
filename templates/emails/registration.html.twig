@@ -1,0 +1,14 @@
+{# templates/emails/registration.html.twig #}
+{% extends 'emails/base.html.twig' %}
+{% block body %}
+    <strong>You did it! You registered!</strong>
+
+    <h3>Hi {{ user.username }}! You're successfully registered.</h3>
+    <p class="lead">
+        To confirm your registration and login, go to: <a
+                href="{{ url('app_confirm', {'token' : user.token}) }}">...</a>.
+    </p>
+    <p class="callout">
+        Thanks!
+    </p>
+{% endblock %}

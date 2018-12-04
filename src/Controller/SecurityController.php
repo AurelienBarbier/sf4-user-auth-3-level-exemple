@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
+use App\Mailer\User as UserMessenger;
+use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use App\Security\UserAuthenticator;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,7 +40,7 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register", name="app_eistration")
      */
-    public function register(UserAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler, Request $request, UserPasswordEncoderInterface $userPasswordEncoder): Response
+    public function register(UserAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler, Request $request, UserPasswordEncoderInterface $userPasswordEncoder, UserMessenger $messenger): Response
     {
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
             $this->addFlash('warning', 'you are already logged !');
@@ -53,20 +56,32 @@ class SecurityController extends AbstractController
             $em = $this->getDoctrine()->getManager();
             $password = $userPasswordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
-
+            $user->setToken(md5(random_bytes(30)));
             $em->persist($user);
             $em->flush();
 
-            return $guardHandler->authenticateUserAndHandleSuccess(
-                $user,          // the User object you just created
-                $request,
-                $authenticator, // authenticator whose onAuthenticationSuccess you want to use
-                'main'          // the name of your firewall in security.yaml
-            );
+            $messenger->sendAccountConfirmationMessage($user);
+
+            $this->addFlash('warning', 'Please, check your mail box to to confirm your email adresse');
         }
 
 
         return $this->render('security/register.html.twig', ['form_registration' => $form->createView()]);
 
+    }
+
+    /**
+     * @Route("/confirm", name="app_confirm")
+     */
+    public function accountConfirmation(Request $request, UserRepository $userRepository): Response
+    {
+        if($request->query->has('token'))
+        {
+            $userRepository->activateToken($request->query->get('token'));
+            $this->addFlash('success', 'Account activated with success. Please, login now !');
+            $this->redirectToRoute('app_login');
+        }
+
+        throw new AuthenticationCredentialsNotFoundException('Your token is out of date');
     }
 }
