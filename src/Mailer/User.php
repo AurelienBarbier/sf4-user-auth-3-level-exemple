@@ -45,7 +45,7 @@ class User
         ->setBody(
             $this->twig->render(
             // templates/emails/registration.html.twig
-                'emails/registration.html.twig',
+                'emails/security/registration.html.twig',
                 array('user' => $user)
             ),
             'text/html'
@@ -54,4 +54,22 @@ class User
         $this->mailer->send($message);
     }
 
+
+    public function sendResetPasswordMessage(AppUser $user)
+    {
+
+        $message = (new \Swift_Message('Reset password request'))
+            ->setFrom($this->from)
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->twig->render(
+                // templates/emails/registration.html.twig
+                    'emails/security/reset_password.html.twig',
+                    array('user' => $user)
+                ),
+                'text/html'
+            );
+
+        $this->mailer->send($message);
+    }
 }

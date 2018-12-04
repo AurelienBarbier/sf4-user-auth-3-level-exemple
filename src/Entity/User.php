@@ -45,7 +45,7 @@ class User implements UserInterface
     private $confirmed = false;
 
     /**
-     * @ORM\Column(type="string", length=32, nullable=true)
+     * @ORM\Column(type="string", length=32, nullable=true, unique=true)
      */
     private $token;
 
