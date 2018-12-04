@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -16,7 +17,12 @@ class UserType extends AbstractType
     {
         $builder
             ->add('email')
-            ->add('password', PasswordType::class)
+            //->add('password', PasswordType::class)
+            ->add('plainPassword', RepeatedType::class, array(
+                'type' => PasswordType::class,
+                'first_options'  => array('label' => 'Password'),
+                'second_options' => array('label' => 'Repeat Password'),
+            ))
             ->add('termsAccepted', CheckboxType::class, array(
                 'mapped' => false,
                 'constraints' => new IsTrue(),
