@@ -7,11 +7,19 @@
         <div class="navbar-nav">
             <a class="nav-item nav-link active" href="/">Home <span class="sr-only">(current)</span></a>
             <a class="nav-item nav-link" href="{{ path('public') }}">Public</a>
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
             <a class="nav-item nav-link" href="{{ path('user') }}">User</a>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
             <a class="nav-item nav-link" href="{{ path('admin') }}">Admin</a>
+            {% endif %}
+            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <a class="nav-item nav-link disabled" href="{{ path('app_logout') }}">Logout</a>
+            {% else %}
             <a class="nav-item nav-link disabled" href="{{ path('app_login') }}">Login</a>
             <a class="nav-item nav-link disabled" href="{{ path('app_registration') }}">Register</a>
             <a class="nav-item nav-link disabled" href="{{ path('app_reset_password_request') }}">Reset password</a>
+            {% endif %}
         </div>
     </div>
 </nav>
