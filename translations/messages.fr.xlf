@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="fr" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="x2HBUVr" resname="You did it! You registered!">
+        <source>You did it! You registered!</source>
+        <target>Tu l'as fait! Tu t'es inscrit!</target>
+      </trans-unit>
+      <trans-unit id="GPJjo3S" resname="Reset password request">
+        <source>Reset password request</source>
+        <target>Demande de réinitialisation de mot de passe</target>
+      </trans-unit>
+      <trans-unit id="aV2km6I" resname="Hi %name%! You're successfully registered.">
+        <source>Hi %name%! You're successfully registered.</source>
+        <target>Bonjour %name%! Vous êtes enregistré avec succès.</target>
+      </trans-unit>
+      <trans-unit id="U8VI2Tv" resname="To confirm your registration and login, go to:">
+        <source>To confirm your registration and login, go to:</source>
+        <target>Pour confirmer votre inscription et votre identifiant, allez à:</target>
+      </trans-unit>
+      <trans-unit id="mAv36aQ" resname="Confirm!">
+        <source>Confirm!</source>
+        <target>Confirmer !</target>
+      </trans-unit>
+      <trans-unit id="GqexwdX" resname="Thanks!">
+        <source>Thanks!</source>
+        <target>Merci !</target>
+      </trans-unit>
+      <trans-unit id="cjz0.w9" resname="You loose your password ? Get a new one !">
+        <source>You loose your password ? Get a new one !</source>
+        <target>Vous avez perdu votre mot de passe? Obtenez en un nouveau!</target>
+      </trans-unit>
+      <trans-unit id="HcKhi4h" resname="Hi %name%! You can follow the link bellow to regenerate one !&lt;/h3&gt;">
+        <source>Hi %name%! You can follow the link bellow to regenerate one !&lt;/h3&gt;</source>
+        <target>Bonjour% name%! Vous pouvez suivre le lien ci-dessous pour en générer un!</target>
+      </trans-unit>
+      <trans-unit id="8SZY1il" resname="To create a new password, go to:">
+        <source>To create a new password, go to:</source>
+        <target>Pour créer un nouveau mot de passe, allez à:</target>
+      </trans-unit>
+      <trans-unit id="zv8EPlS" resname="Hi %name%! You can follow the link bellow to regenerate one !">
+        <source>Hi %name%! You can follow the link bellow to regenerate one !</source>
+        <target>__Hi %name%! You can follow the link bellow to regenerate one !</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

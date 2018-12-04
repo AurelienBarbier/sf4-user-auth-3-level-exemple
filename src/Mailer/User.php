@@ -9,8 +9,8 @@
 namespace App\Mailer;
 
 use App\Entity\User as AppUser;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
-use Symfony\Bundle\TwigBundle\TwigEngine;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig_Environment;
 
 class User
 {
@@ -25,31 +25,40 @@ class User
     private $from;
 
     /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
      * @var Twig_Environment
      */
     private $twig;
 
-    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $twig, $from)
+    public function __construct(\Swift_Mailer $mailer,
+                                \Twig_Environment $twig,
+                                TranslatorInterface $translator,
+                                $from)
     {
         $this->mailer = $mailer;
-        $this->from = $from;
         $this->twig = $twig;
+        $this->translator = $translator;
+        $this->from = $from;
     }
 
     public function sendAccountConfirmationMessage(AppUser $user)
     {
-
-        $message = (new \Swift_Message('Registration confirmation'))
-        ->setFrom($this->from)
-        ->setTo($user->getEmail())
-        ->setBody(
-            $this->twig->render(
+        $subject = $this->translator->trans('Registration confirmation');
+        $message = (new \Swift_Message($subject))
+            ->setFrom($this->from)
+            ->setTo($user->getEmail())
+            ->setBody(
+                $this->twig->render(
                 // templates/emails/registration.html.twig
-                'emails/security/registration.html.twig',
-                array('user' => $user)
-            ),
-            'text/html'
-        );
+                    'emails/security/registration.html.twig',
+                    array('subject' => $subject, 'user' => $user)
+                ),
+                'text/html'
+            );
 
         $this->mailer->send($message);
     }
@@ -57,15 +66,15 @@ class User
 
     public function sendResetPasswordMessage(AppUser $user)
     {
-
-        $message = (new \Swift_Message('Reset password request'))
+        $subject = $this->translator->trans('Reset password request');
+        $message = (new \Swift_Message($subject))
             ->setFrom($this->from)
             ->setTo($user->getEmail())
             ->setBody(
                 $this->twig->render(
-                    // templates/emails/registration.html.twig
+                // templates/emails/registration.html.twig
                     'emails/security/reset_password.html.twig',
-                    array('user' => $user)
+                    array('subject' => $subject, 'user' => $user)
                 ),
                 'text/html'
             );

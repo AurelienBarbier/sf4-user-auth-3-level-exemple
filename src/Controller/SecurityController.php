@@ -28,9 +28,8 @@ class SecurityController extends AbstractController
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
+        if ($this->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $this->addFlash('warning', 'you are already logged !');
-
             return $this->redirectToRoute('user');
         }
         // get the login error if there is one
@@ -42,7 +41,7 @@ class SecurityController extends AbstractController
     }
 
     /**
-     * @Route("/register", name="app_eistration")
+     * @Route("/register", name="app_registration")
      */
     public function register(
         Request $request,
