@@ -29,7 +29,7 @@ class User
      */
     private $twig;
 
-    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $twig , $from)
+    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $twig, $from)
     {
         $this->mailer = $mailer;
         $this->from = $from;
@@ -44,7 +44,7 @@ class User
         ->setTo($user->getEmail())
         ->setBody(
             $this->twig->render(
-            // templates/emails/registration.html.twig
+                // templates/emails/registration.html.twig
                 'emails/security/registration.html.twig',
                 array('user' => $user)
             ),
@@ -63,7 +63,7 @@ class User
             ->setTo($user->getEmail())
             ->setBody(
                 $this->twig->render(
-                // templates/emails/registration.html.twig
+                    // templates/emails/registration.html.twig
                     'emails/security/reset_password.html.twig',
                     array('user' => $user)
                 ),

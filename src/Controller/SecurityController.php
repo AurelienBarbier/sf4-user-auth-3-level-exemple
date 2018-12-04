@@ -29,7 +29,6 @@ class SecurityController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
-
             $this->addFlash('warning', 'you are already logged !');
 
             return $this->redirectToRoute('user');
@@ -45,8 +44,11 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register", name="app_eistration")
      */
-    public function register(UserAuthenticator $authenticator, GuardAuthenticatorHandler $guardHandler, Request $request, UserPasswordEncoderInterface $userPasswordEncoder, UserMessenger $messenger): Response
-    {
+    public function register(
+        Request $request,
+        UserPasswordEncoderInterface $userPasswordEncoder,
+        UserMessenger $messenger
+    ): Response {
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
             $this->addFlash('warning', 'you are already logged !');
             return $this->redirectToRoute('user');
@@ -72,7 +74,6 @@ class SecurityController extends AbstractController
 
 
         return $this->render('security/register.html.twig', ['form_registration' => $form->createView()]);
-
     }
 
     /**
@@ -118,8 +119,9 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('security/reset_password_request.html.twig', ['form_reset_request' => $form->createView()]);
-
+        return $this->render('security/reset_password_request.html.twig', [
+                'form_reset_request' => $form->createView()
+            ]);
     }
 
     /**

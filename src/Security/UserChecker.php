@@ -8,7 +8,6 @@
 
 namespace App\Security;
 
-
 use App\Entity\User as AppUser;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
