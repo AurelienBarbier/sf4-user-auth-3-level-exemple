@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Mailer\User as UserMessenger;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -30,6 +31,7 @@ class SecurityController extends AbstractController
     {
         if ($this->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             $this->addFlash('warning', 'you are already logged !');
+
             return $this->redirectToRoute('user');
         }
         // get the login error if there is one
@@ -46,10 +48,13 @@ class SecurityController extends AbstractController
     public function register(
         Request $request,
         UserPasswordEncoderInterface $userPasswordEncoder,
-        UserMessenger $messenger
-    ): Response {
+        UserMessenger $messenger,
+        EntityManagerInterface $em
+    ): Response
+    {
         if ($this->isGranted('IS_AUTHENTICATED_FULLY')) {
             $this->addFlash('warning', 'you are already logged !');
+
             return $this->redirectToRoute('user');
         }
 
@@ -59,20 +64,21 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $password = $userPasswordEncoder->encodePassword($user, $user->getPlainPassword());
-            $user->setPassword($password);
+            $encodedPassword = $userPasswordEncoder->encodePassword($user, $user->getPlainPassword());
+            $user->setPassword($encodedPassword);
             $user->setToken(md5(random_bytes(30)));
             $em->persist($user);
             $em->flush();
 
             $messenger->sendAccountConfirmationMessage($user);
 
-            $this->addFlash('warning', 'Please, check your mail box to to confirm your email adresse');
+            $this->addFlash('warning', 'Please, check your mail box to to confirm your email address');
         }
 
-
-        return $this->render('security/register.html.twig', ['form_registration' => $form->createView()]);
+        return $this->render('security/register.html.twig', [
+                'form_registration' => $form->createView(),
+            ]
+        );
     }
 
     /**
@@ -92,7 +98,12 @@ class SecurityController extends AbstractController
     /**
      * @Route("/reset-password/request", name="app_reset_password_request")
      */
-    public function resetPasswordRequest(Request $request, UserMessenger $messenger, UserRepository $userRepository)
+    public function resetPasswordRequest(
+        Request $request,
+        UserMessenger $messenger,
+        UserRepository $userRepository,
+        EntityManagerInterface $em
+    ): Response
     {
         $form = $this->createFormBuilder()
             ->add('email', EmailType::class, [
@@ -101,8 +112,8 @@ class SecurityController extends AbstractController
             ->getForm();
 
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             /**
              * @var User $user
              */
@@ -115,39 +126,46 @@ class SecurityController extends AbstractController
             $user->setToken(md5(random_bytes(30)));
             $em->flush();
             $messenger->sendResetPasswordMessage($user);
+
             return $this->redirectToRoute('app_login');
         }
 
         return $this->render('security/reset_password_request.html.twig', [
-                'form_reset_request' => $form->createView()
-            ]);
+            'form_reset_request' => $form->createView(),
+        ]);
     }
 
     /**
      * @Route("/reset-password/{token}", name="app_reset_password")
      */
-    public function resetPassword(Request $request, User $user, UserPasswordEncoderInterface $userPasswordEncoder)
+    public function resetPassword(
+        Request $request,
+        User $user,
+        UserPasswordEncoderInterface $userPasswordEncoder,
+        EntityManagerInterface $em
+    ): Response
     {
         $form = $this->createFormBuilder($user)
             ->add('plainPassword', RepeatedType::class, array(
-                'type' => PasswordType::class,
-                'first_options' => array('label' => 'Password'),
+                'type'           => PasswordType::class,
+                'first_options'  => array('label' => 'Password'),
                 'second_options' => array('label' => 'Repeat Password'),
             ))->getForm();
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
             $password = $userPasswordEncoder->encodePassword($user, $user->getPlainPassword());
             $user->setPassword($password);
             $user->setToken(null);
-            $em->persist($user);
             $em->flush();
 
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('security/reset_password.html.twig', ['form_reset' => $form->createView()]);
+        return $this->render('security/reset_password.html.twig', [
+                'form_reset' => $form->createView(),
+            ]
+        );
     }
 }

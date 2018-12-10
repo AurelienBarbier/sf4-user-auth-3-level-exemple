@@ -52,10 +52,10 @@ class User
             ->setFrom($this->from)
             ->setTo($user->getEmail())
             ->setBody(
-                $this->twig->render(
-                // templates/emails/registration.html.twig
-                    'emails/security/registration.html.twig',
-                    array('subject' => $subject, 'user' => $user)
+                $this->twig->render('emails/security/registration.html.twig', [
+                        'subject' => $subject,
+                        'user'    => $user,
+                    ]
                 ),
                 'text/html'
             );
@@ -71,10 +71,10 @@ class User
             ->setFrom($this->from)
             ->setTo($user->getEmail())
             ->setBody(
-                $this->twig->render(
-                // templates/emails/registration.html.twig
-                    'emails/security/reset_password.html.twig',
-                    array('subject' => $subject, 'user' => $user)
+                $this->twig->render('emails/security/reset_password.html.twig', [
+                        'subject' => $subject,
+                        'user'    => $user,
+                    ]
                 ),
                 'text/html'
             );
